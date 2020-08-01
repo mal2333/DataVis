@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="styles.css">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+  <title>Weather I am happy or not?!</title>
+</head>
+
+<body>
+
+  <div class="fixed-action-btn">
+  <a class="btn-floating btn-large purple">
+    <i class="large material-icons">mode_edit</i>
+  </a>
+  <ul>
+    <li><a class="btn-floating purple lighten-2 sidenav-trigger" data-target="slide-out" href="#"><i class="material-icons">insert_chart</i></a></li>
+    <li><a class="btn-floating purple lighten-2 modal-trigger" href="#modal1"><i class="material-icons">add</i></a></li>
+  </ul>
+</div>
+
+  <!-- Modal Structure -->
+  <div id="modal1" class="modal">
+    <div class="modal-content">
+      <h4>Does the weather influence your mood?</h4>
+
+      <div class="row">
+        <div class="input-field col s6">
+          <input placeholder="First name" id="first_name" type="text" class="validate">
+        </div>
+        <div class="input-field col s6">
+          <input placeholder="Last name" id="last_name" type="text" class="validate">
+        </div>
+        <div class="input-field col s6">
+          <input placeholder="Returning user - ID" id="id" type="text" class="validate">
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="input-field col">
+          <select class="icons">
+            <option value="Sad" data-icon="assets/Sad.png" class="left">Sad</option>
+            <option value="Grumpy" data-icon="assets/Grumpy.png">Grumpy</option>
+            <option value="Okay/calm" data-icon="assets/Okay.png">Okay/Calm</option>
+            <option value="Joyful/happy" data-icon="assets/Happy.png">Joyful/Happy</option>
+            <option value="Excited" data-icon="assets/Excited.png">Excited!</option>
+          </select>
+          <label>How are you feeling?</label>
+        </div>
+
+        <div class="input-field col">
+          <select class="icons">
+            <option value="Too cold" data-icon="assets/Toocold.png">Too Cold!</option>
+            <option value="Chilly" data-icon="assets/Chilly.png">Chilly, but ok</option>
+            <option value="Warm" data-icon="assets/Warm.png">Warm</option>
+            <option value="Too hot" data-icon="assets/Toohot.png">Too Hot!</option>
+          </select>
+          <label>How hot/cold is it?</label>
+        </div>
+
+        <div class="input-field col">
+          <select class="icons">
+            <option value="Snowy" data-icon="assets/Snowy.png">Snowy</option>
+            <option value="Rainy" data-icon="assets/Rainy.png">Rainy</option>
+            <option value="Sunny" data-icon="assets/Sunny.png">Sunny</option>
+            <option value="Foggy" data-icon="assets/Foggy.png">Foggy</option>
+            <option value="Cloudy" data-icon="assets/Cloudy.png">Cloudy</option>
+            <option value="Other" data-icon="assets/Other.png">Other</option>
+          </select>
+          <label>How is the sky?</label>
+        </div>
+      </div>
+
+    </div>
+    <div class="modal-footer">
+      <button class="btn-small waves-effect waves-light purple lighten-2" type="submit" name="action" id="modal-submit">Submit
+        <i class="material-icons right">send</i>
+      </button>
+    </div>
+  </div>
+
+  <!-- Side navbar -->
+  <ul id="slide-out" class="sidenav">
+
+  </ul>
+
+
+  <!--  JS Libraries  -->
+  <script src="p5.js"></script>
+  <script src="jquery-3.5.1.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/7.17.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/7.17.1/firebase-firestore.js"></script>
+  <script>
+    var firebaseConfig = {
+      apiKey: "AIzaSyAwfgAiVdX0J9PrYosIBGvygXtsTCVbBVY",
+      authDomain: "testproject-715da.firebaseapp.com",
+      databaseURL: "https://testproject-715da.firebaseio.com",
+      projectId: "testproject-715da",
+      storageBucket: "testproject-715da.appspot.com",
+      messagingSenderId: "515128967875",
+      appId: "1:515128967875:web:fd0eb6a7923661f9679876"
+    };
+    firebase.initializeApp(firebaseConfig);
+    let db = firebase.firestore();
+  </script>
+  <script src="script.js"></script>
+
+</body>
+
+</html>

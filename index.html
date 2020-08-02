@@ -31,40 +31,46 @@
 
       <div class="row">
         <div class="input-field col s6">
-          <input placeholder="First name" id="first_name" type="text" class="validate">
+          <input placeholder="First name" id="first_name" type="text">
         </div>
         <div class="input-field col s6">
-          <input placeholder="Last name" id="last_name" type="text" class="validate">
+          <input placeholder="Last name" id="last_name" type="text">
         </div>
-        <div class="input-field col s6">
-          <input placeholder="Returning user - ID" id="id" type="text" class="validate">
+        <div class="input-field col s3">
+          <label>
+            <input type="checkbox" id="idcheck">
+            <span>Retuning User</span>
+          </label>
+       </div>
+        <div class="input-field col s9">
+          <input placeholder="ID" id="id1" type="text" disabled="disabled">
         </div>
       </div>
 
       <div class="row">
         <div class="input-field col">
-          <select class="icons">
-            <option value="Sad" data-icon="assets/Sad.png" class="left">Sad</option>
+          <select class="feeling">
+            <option value="Sad" data-icon="assets/Sad.png">Sad</option>
             <option value="Grumpy" data-icon="assets/Grumpy.png">Grumpy</option>
             <option value="Okay/calm" data-icon="assets/Okay.png">Okay/Calm</option>
             <option value="Joyful/happy" data-icon="assets/Happy.png">Joyful/Happy</option>
-            <option value="Excited" data-icon="assets/Excited.png">Excited!</option>
+            <option value="Excited!" data-icon="assets/Excited.png">Excited!</option>
           </select>
           <label>How are you feeling?</label>
         </div>
 
         <div class="input-field col">
-          <select class="icons">
-            <option value="Too cold" data-icon="assets/Toocold.png">Too Cold!</option>
-            <option value="Chilly" data-icon="assets/Chilly.png">Chilly, but ok</option>
+          <select class="temperature">
+            <option value="Too cold!" data-icon="assets/Toocold.png">Too Cold!</option>
+            <option value="Chilly but ok" data-icon="assets/Chilly.png">Chilly, but ok</option>
             <option value="Warm" data-icon="assets/Warm.png">Warm</option>
-            <option value="Too hot" data-icon="assets/Toohot.png">Too Hot!</option>
+            <option value="Too hot!" data-icon="assets/Toohot.png">Too Hot!</option>
           </select>
           <label>How hot/cold is it?</label>
         </div>
 
         <div class="input-field col">
-          <select class="icons">
+          <select class="sky">
             <option value="Snowy" data-icon="assets/Snowy.png">Snowy</option>
             <option value="Rainy" data-icon="assets/Rainy.png">Rainy</option>
             <option value="Sunny" data-icon="assets/Sunny.png">Sunny</option>
@@ -86,7 +92,25 @@
 
   <!-- Side navbar -->
   <ul id="slide-out" class="sidenav">
+    <form>
+      <li><h5>Visualize the data by...</h4></li>
 
+
+
+      <li>
+        <div class="input-field">
+          <label>
+            <input type="checkbox" />
+            <span>Your personal data only</span>
+          </label>
+        </div>
+      </li>
+      <li>
+        <div class="input-field">
+          <input placeholder="ID" id="id2" type="text" class="validate" disabled="disabled">
+        </div>
+      </li>
+    </form>
   </ul>
 
 

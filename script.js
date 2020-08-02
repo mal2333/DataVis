@@ -1,11 +1,23 @@
-let datas, rainy, snowy, other;
+let datas, allIDs, rainy, snowy, other;
 var started = false;
 let userInputRef = db.collection('userInput');
+let userIdsRef = db.collection('usersIds');
 
-/*  READING FROM DATABASE */
+$(document).ready(function(){
+  $('.fixed-action-btn').floatingActionButton();
+  $('.modal').modal({
+    onCloseEnd(){
+      //reset();
+    }
+  });
+  $('.trigger-modal').modal();
+  $('select').formSelect();
+  $('.sidenav').sidenav({edge: 'right'});
+});
+
+/*  READING USERINPUT FROM DATABASE */
 let getData = userInputRef.get().then(querySnap => {
   let userInputList = [];
-
   querySnap.forEach(doc => {
     let input = {};
     input.skyColor = doc.data().skyColor;
@@ -14,54 +26,74 @@ let getData = userInputRef.get().then(querySnap => {
     userInputList.push(input);
   });
   datas = userInputList;
-  //console.log(datas);
   console.log("got data");
   return datas;
 });
 
-/* PUSHING TO DATABASE */
-/*
-let todosRef  = db.collection('todos');
-	var newTodo = {
-    task: inputEl.value,
-    done: false
-  };
-	data.push(newTodo);
-  todosRef.add(newTodo);
-*/
-
-
-/* ASKING USER*/
-//MODAL
-/*document.addEventListener('DOMContentLoaded', function() {
-  var elems = document.querySelectorAll('.modal');
-  var instances = M.Modal.init(elems);
-  var elem = document.querySelector('#modal1');
-  var instance = M.Modal.getInstance(elem);
-  const modalbtn = document.querySelector('.modal-trigger');
-  modalbtn.addEventListener('click', () => {
-    instance.open();
-  });
-  const modalbtnsubmit = document.querySelector('#modal-submit');
-  modalbtnsubmit.addEventListener('click', () => {
-    instance.close();
-  })
-});*/
-
-$(document).ready(function(){
-  $('.fixed-action-btn').floatingActionButton();
-  $('.modal').modal();
-  $('.trigger-modal').modal();
-  $('select').formSelect();
-  $('.sidenav').sidenav({edge: 'right'});
+/*  USER INPUT  */
+//IDCHECKBOX
+$('#idcheck').click(function(){
+  if($(this).is(':checked')){
+    $('#id1').attr("disabled", false);
+  }else{
+    $('#id1').attr("disabled", true);
+  }
 });
 
-//FORM
+//FORM SUBMIT
+$("#modal-submit").click(async function(){
+  let firstName = $("#first_name").val();
+  let lastName = $("#last_name").val();
+  let userID;
+  if($('#idcheck').is(":checked")){
+    userID = $("#id1").val();
+  }
+  let feeling = $( ".feeling" ).val();;
+  let sky = $( ".sky" ).val();;
+  let temperature = $( ".temperature" ).val();;
+
+/*  SEND TO DATABASE  */
+//Create new document in usersIds collection if user doesn't exist
+  if(userID == null){
+    userID = userIdsRef.doc().id;
+    let newUsersIds = {
+      firstName: firstName,
+      lastName: lastName,
+      userID: userID,
+    };
+    userIdsRef.doc(userID).set(newUsersIds);
+  }else{
+    await userIdsRef.get().then(querySnap => {
+      let userIdsList = [];
+      querySnap.forEach(doc => {
+        let thatid = doc.data().userID;
+        userIdsList.push(thatid);
+      });
+      allIDs = userIdsList;
+      return allIDs;
+    });
+    if(!allIDs.includes(userID)){
+      alert("This ID doesn't exist, try again");
+    }
+  }
+
+//Create new document in UserInput collection
+  let newUserInput = {
+    userID: userID,
+    feeling: feeling,
+    skyColor: sky,
+    temperature: temperature
+  };
+  userInputRef.add(newUserInput);
+
+  //close modal and erase data
+});
+
+/*  QUERYING DATA TO VISUALIZE  */
+//SIDENAV TODO
 
 
-/* QUERYING DIFFERENT DATA */
-
-/* CONVERTING TO COLORS */
+/*  CONVERTING TO COLORS  */
 function convert(datas) {
   for (d of datas) {
     switch (d.skyColor) {
@@ -97,7 +129,7 @@ function convert(datas) {
       case "Okay/calm":
         d.feeling = '#94D7F2'; //#CCCC55';
         break;
-      case "Excited":
+      case "Excited!":
         d.feeling = '#F05053';
         break;
     }
@@ -119,7 +151,7 @@ function convert(datas) {
   console.log("converted datas");
 }
 
-/* DRAW SKY 1/2 CIRCLE, FEELING 1/2 CIRCLE, TEMP LINES */
+/*  DRAW SKY 1/2 CIRCLE, FEELING 1/2 CIRCLE, TEMP LINES  */
 function skyCircle(skyC, x, y) {
   fill(skyC);
   arc(x, y, 100, 100, TWO_PI - PI / 18, PI - PI / 18, PIE);
@@ -157,14 +189,14 @@ function tempLines(x, y, temp) {
   }
 }
 
-/* DRAW WHOLE CIRCLES */
+/*  DRAW WHOLE CIRCLES  */
 function moodCircles(x, y, skyC, feelingC, temp) {
   skyCircle(skyC, x, y);
   feelingCircle(feelingC, x, y)
   tempLines(x, y, temp);
 }
 
-/* AT SETUP */
+/*  AT SETUP  */
 async function setup() {
   createCanvas(window.innerWidth, window.innerHeight);
   imageMode(CENTER);
@@ -177,7 +209,7 @@ async function setup() {
   noLoop();
 }
 
-/* DRAW */
+/*  DRAW  */
 function draw() {
   if (started) {
     var x = 100;

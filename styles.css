@@ -9,11 +9,13 @@ ul.dropdown-content.select-dropdown li span {
     font-size: 12px;
 }
 
-/*.row{
-  padding-top: 3em;
-  padding-bottom: 12em;
-}*/
+.sidenav{
+  padding: 16px 16px;
+  text-align: center;
+}
 
-.side-nav li {
-  padding: 0 16px;
+.sidenav p{
+  margin: 0px;
+  padding-left: 1em;
+  text-align: left;
 }

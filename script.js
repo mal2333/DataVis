@@ -1,4 +1,4 @@
-let datas, allIDs, rainy, snowy, other;
+let datas, rainy, snowy, other;
 var started = false;
 let userInputRef = db.collection('userInput');
 let userIdsRef = db.collection('usersIds');
@@ -6,13 +6,16 @@ let userIdsRef = db.collection('usersIds');
 $(document).ready(function(){
   $('.fixed-action-btn').floatingActionButton();
   $('.modal').modal({
-    onCloseEnd(){
-      //reset();
+    onCloseEnd: function() {
+      window.location.reload();
     }
   });
   $('.trigger-modal').modal();
   $('select').formSelect();
   $('.sidenav').sidenav({edge: 'right'});
+  $('.collapsible').collapsible({
+    accordion: false,
+  });
 });
 
 /*  READING USERINPUT FROM DATABASE */
@@ -30,63 +33,74 @@ let getData = userInputRef.get().then(querySnap => {
   return datas;
 });
 
+/*  GET USERS EMAILS FROM DATABASE  */
+function getEmails(){
+  let promise = userIdsRef.get().then(querySnap => {
+    let usersEmails = [];
+    querySnap.forEach(doc => {
+      let thatEmail = doc.data().email;
+      usersEmails.push(thatEmail);
+    });
+    return usersEmails;
+  });
+  return promise;
+}
+
+/*  SEND TO DATABASE  */
+//Create new document in usersIds collection
+function newUserIdDocument(firstName, lastName, email){
+  let newUsersIds = {
+    firstName: firstName,
+    lastName: lastName,
+    email: email
+  };
+  userIdsRef.add(newUsersIds);
+}
+
+//Create new document in UserInput collection
+function newUserInputDocument(feeling, sky, temperature, email){
+  let newUserInput = {
+    feeling: feeling,
+    skyColor: sky,
+    temperature: temperature,
+    email: email
+  };
+  userInputRef.add(newUserInput);
+}
+
 /*  USER INPUT  */
 //IDCHECKBOX
-$('#idcheck').click(function(){
+$('#email-check').click(function(){
   if($(this).is(':checked')){
-    $('#id1').attr("disabled", false);
+    $('#first_name').attr("disabled", true);
+    $('#last_name').attr("disabled", true);
   }else{
-    $('#id1').attr("disabled", true);
+    $('#first_name').attr("disabled", false);
+    $('#last_name').attr("disabled", false);
   }
 });
 
 //FORM SUBMIT
-$("#modal-submit").click(async function(){
+$("#formid").submit(async function(e) {
+  e.preventDefault();
   let firstName = $("#first_name").val();
   let lastName = $("#last_name").val();
-  let userID;
-  if($('#idcheck').is(":checked")){
-    userID = $("#id1").val();
-  }
-  let feeling = $( ".feeling" ).val();;
-  let sky = $( ".sky" ).val();;
-  let temperature = $( ".temperature" ).val();;
+  let email = $("#email").val();
+  let feeling = $( ".feeling" ).val();
+  let sky = $( ".sky" ).val();
+  let temperature = $( ".temperature" ).val();
 
-/*  SEND TO DATABASE  */
-//Create new document in usersIds collection if user doesn't exist
-  if(userID == null){
-    userID = userIdsRef.doc().id;
-    let newUsersIds = {
-      firstName: firstName,
-      lastName: lastName,
-      userID: userID,
-    };
-    userIdsRef.doc(userID).set(newUsersIds);
-  }else{
-    await userIdsRef.get().then(querySnap => {
-      let userIdsList = [];
-      querySnap.forEach(doc => {
-        let thatid = doc.data().userID;
-        userIdsList.push(thatid);
-      });
-      allIDs = userIdsList;
-      return allIDs;
-    });
-    if(!allIDs.includes(userID)){
-      alert("This ID doesn't exist, try again");
+  if($('#email-check').is(":not(:checked)")){
+    newUserIdDocument(firstName, lastName, email);
+    newUserInputDocument(feeling, sky, temperature, email);
+  }else {
+    let allEmails = await getEmails();
+    if(allEmails.includes(email)){
+      newUserInputDocument(feeling, sky, temperature, email);
+    }else{
+      alert("This email doesn't exist in our database");
     }
   }
-
-//Create new document in UserInput collection
-  let newUserInput = {
-    userID: userID,
-    feeling: feeling,
-    skyColor: sky,
-    temperature: temperature
-  };
-  userInputRef.add(newUserInput);
-
-  //close modal and erase data
 });
 
 /*  QUERYING DATA TO VISUALIZE  */
@@ -201,7 +215,7 @@ async function setup() {
   createCanvas(window.innerWidth, window.innerHeight);
   imageMode(CENTER);
   rainy = loadImage('assets/stripes.png');
-  snowy = loadImage('assets/dots2.png')
+  snowy = loadImage('assets/dots.png')
   other = loadImage('assets/other.png')
   await getData;
   convert(datas);

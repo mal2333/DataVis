@@ -8,11 +8,15 @@
   <link rel="stylesheet" href="styles.css">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+  <link rel="shortcut icon" href="#">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
   <title>Weather I am happy or not?!</title>
 </head>
 
 <body>
+  <div style="padding:1em;">
+    <div class="chip">All data</div>
+  </div>
 
   <div class="fixed-action-btn">
   <a class="btn-floating btn-large purple">
@@ -26,30 +30,32 @@
 
   <!-- Modal Structure -->
   <div id="modal1" class="modal">
+<form id="formid">
     <div class="modal-content">
       <h4>Does the weather influence your mood?</h4>
 
       <div class="row">
         <div class="input-field col s6">
-          <input placeholder="First name" id="first_name" type="text">
+          <input placeholder="First name" id="first_name" type="text" class="validate" required>
         </div>
         <div class="input-field col s6">
-          <input placeholder="Last name" id="last_name" type="text">
+          <input placeholder="Last name" id="last_name" type="text" class="validate" required>
         </div>
         <div class="input-field col s3">
           <label>
-            <input type="checkbox" id="idcheck">
+            <input type="checkbox" id="email-check">
             <span>Retuning User</span>
           </label>
        </div>
         <div class="input-field col s9">
-          <input placeholder="ID" id="id1" type="text" disabled="disabled">
+          <input placeholder="E-mail" id="email" type="email" class="validate" required>
         </div>
       </div>
 
       <div class="row">
         <div class="input-field col">
-          <select class="feeling">
+          <select class="feeling" required>
+            <option value="" disabled selected>Choose one</option>
             <option value="Sad" data-icon="assets/Sad.png">Sad</option>
             <option value="Grumpy" data-icon="assets/Grumpy.png">Grumpy</option>
             <option value="Okay/calm" data-icon="assets/Okay.png">Okay/Calm</option>
@@ -60,7 +66,8 @@
         </div>
 
         <div class="input-field col">
-          <select class="temperature">
+          <select class="temperature" required>
+            <option value="" disabled selected>Choose one</option>
             <option value="Too cold!" data-icon="assets/Toocold.png">Too Cold!</option>
             <option value="Chilly but ok" data-icon="assets/Chilly.png">Chilly, but ok</option>
             <option value="Warm" data-icon="assets/Warm.png">Warm</option>
@@ -70,46 +77,166 @@
         </div>
 
         <div class="input-field col">
-          <select class="sky">
+          <select class="sky" required>
+            <option value="" disabled selected>Choose one</option>
             <option value="Snowy" data-icon="assets/Snowy.png">Snowy</option>
             <option value="Rainy" data-icon="assets/Rainy.png">Rainy</option>
             <option value="Sunny" data-icon="assets/Sunny.png">Sunny</option>
             <option value="Foggy" data-icon="assets/Foggy.png">Foggy</option>
             <option value="Cloudy" data-icon="assets/Cloudy.png">Cloudy</option>
-            <option value="Other" data-icon="assets/Other.png">Other</option>
+            <option value="Other" data-icon="assets/Other1.png">Other</option>
           </select>
           <label>How is the sky?</label>
         </div>
       </div>
-
     </div>
+
     <div class="modal-footer">
-      <button class="btn-small waves-effect waves-light purple lighten-2" type="submit" name="action" id="modal-submit">Submit
+      <button class="btn-small purple lighten-2 modal-close" type="submit" id="modal-submit">Submit
         <i class="material-icons right">send</i>
       </button>
     </div>
+
+  </form>
   </div>
 
   <!-- Side navbar -->
   <ul id="slide-out" class="sidenav">
+    <h6>Filter out and visualize the data by...</h6>
+    <br>
     <form>
-      <li><h5>Visualize the data by...</h4></li>
+      <div class="switch">
+        <label>
+        All data
+        <input type="checkbox">
+        <span class="lever"></span>
+        Personal data
+        </label>
+      </div>
+      <div class="input-field">
+        <!--i class="material-icons prefix">email</i-->
+        <input id="email" type="email" class="validate">
+        <label for="email">Email</label>
+      </div>
+      <ul class="collapsible">
+        <li>
+          <div class="collapsible-header">
+            <i class="material-icons">sentiment_satisfied</i>
+            <i class="material-icons">sentiment_dissatisfied</i>
+            Feelings and moods
+          </div>
+          <div class="collapsible-body">
+            <p>
+              <label>
+                <input type="checkbox"/>
+                <span><img src="assets/Sad.png" width='30px'> Sad</span>
+              </label>
+            </p>
+            <p>
+              <label>
+                <input type="checkbox"/>
+                <span><img src="assets/Okay.png" width='30px'> Grumpy</span>
+              </label>
+            </p>
+            <p>
+              <label>
+                <input type="checkbox"/>
+                <span><img src="assets/Okay.png" width='30px'> Okay/Calm</span>
+              </label>
+            </p>
+            <p>
+              <label>
+                <input type="checkbox"/>
+                <span><img src="assets/Happy.png" width='30px'> Happy</span>
+              </label>
+            </p>
+            <p>
+              <label>
+                <input type="checkbox"/>
+                <span><img src="assets/Excited.png" width='30px'> Excited!</span>
+              </label>
+            </p>
+          </div>
+        </li>
+        <li>
+          <div class="collapsible-header">
+            <i class="material-icons">ac_unit</i>
+            Temperatures
+          </div>
+          <div class="collapsible-body">
+            <p>
+              <label>
+                <input type="checkbox"/>
+                <span><img src="assets/Toocold.png" width='30px'> Too Cold!</span>
+              </label>
+            </p>
+            <p>
+              <label>
+                <input type="checkbox"/>
+                <span><img src="assets/Chilly.png" width='30px'> Chilly, but ok</span>
+              </label>
+            </p>
+            <p>
+              <label>
+                <input type="checkbox"/>
+                <span><img src="assets/Warm.png" width='30px'> Warm</span>
+              </label>
+            </p>
+            <p>
+              <label>
+                <input type="checkbox"/>
+                <span><img src="assets/Toohot.png" width='30px'> Too Hot!</span>
+              </label>
+            </p>
+          </div>
+        </li>
+        <li>
+          <div class="collapsible-header">
+            <i class="material-icons">wb_cloudy</i>
+            <i class="material-icons">wb_sunny</i>
+            Sky and weather
+          </div>
+          <div class="collapsible-body">
+            <p>
+              <label>
+                <input type="checkbox"/>
+                <span><img src="assets/Snowy.png" width='30px'> Snowy</span>
+              </label>
+            </p>
+            <p>
+              <label>
+                <input type="checkbox"/>
+                <span><img src="assets/Rainy.png" width='30px'> Rainy</span>
+              </label>
+            </p>
+            <p>
+              <label>
+                <input type="checkbox"/>
+                <span><img src="assets/Sunny.png" width='30px'> Sunny</span>
+              </label>
+            </p>
+            <p>
+              <label>
+                <input type="checkbox"/>
+                <span><img src="assets/Foggy.png" width='30px'> Foggy</span>
+              </label>
+            </p>
+            <p>
+              <label>
+                <input type="checkbox"/>
+                <span><img src="assets/Cloudy.png" width='30px'> Cloudy</span>
+              </label>
+            </p>
+            <p>
+              <label>
+                <input type="checkbox"/>
+                <span><img src="assets/Other1.png" width='30px'> Other</span>
+              </label>
+            </p>
+          </div>
+        </li>
+      </ul>
 
-
-
-      <li>
-        <div class="input-field">
-          <label>
-            <input type="checkbox" />
-            <span>Your personal data only</span>
-          </label>
-        </div>
-      </li>
-      <li>
-        <div class="input-field">
-          <input placeholder="ID" id="id2" type="text" class="validate" disabled="disabled">
-        </div>
-      </li>
     </form>
   </ul>
 

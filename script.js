@@ -1,3 +1,12 @@
+/*TO DO MORE:
+CHIPS LINKED TO FILTERING OUT DATA
+PAGINATION
+TIMESTAMP
+LOCATION
+
+*/
+
+
 let datas, rainy, snowy, other;
 var started = false;
 let userInputRef = db.collection('userInput');
@@ -5,11 +14,7 @@ let userIdsRef = db.collection('usersIds');
 
 $(document).ready(function(){
   $('.fixed-action-btn').floatingActionButton();
-  $('.modal').modal({
-    onCloseEnd: function() {
-      window.location.reload();
-    }
-  });
+  $('.modal').modal();
   $('.trigger-modal').modal();
   $('select').formSelect();
   $('.sidenav').sidenav({edge: 'right'});
@@ -19,19 +24,22 @@ $(document).ready(function(){
 });
 
 /*  READING USERINPUT FROM DATABASE */
-let getData = userInputRef.get().then(querySnap => {
-  let userInputList = [];
-  querySnap.forEach(doc => {
-    let input = {};
-    input.skyColor = doc.data().skyColor;
-    input.feeling = doc.data().feeling;
-    input.temperature = doc.data().temperature;
-    userInputList.push(input);
+function getData(ref){
+  let promise = ref.get().then(querySnap => {
+    let userInputList = [];
+    querySnap.forEach(doc => {
+      let input = {};
+      input.skyColor = doc.data().skyColor;
+      input.feeling = doc.data().feeling;
+      input.temperature = doc.data().temperature;
+      userInputList.push(input);
+    });
+    datas = userInputList;
+    console.log("got data");
+    return datas;
   });
-  datas = userInputList;
-  console.log("got data");
-  return datas;
-});
+  return promise;
+}
 
 /*  GET USERS EMAILS FROM DATABASE  */
 function getEmails(){
@@ -101,10 +109,100 @@ $("#formid").submit(async function(e) {
       alert("This email doesn't exist in our database");
     }
   }
+  datas = await getData(userInputRef);
+  convert(datas);
+  clear();
+  redraw();
 });
 
 /*  QUERYING DATA TO VISUALIZE  */
-//SIDENAV TODO
+//SIDENAV SWITCH
+$('#switch').click(function(){
+  if($(this).is(':checked')){
+    $('#email-personalize').attr("disabled", false);
+  }else{
+    $('#email-personalize').attr("disabled", true);
+  }
+});
+
+//SIDENAV FILTER OUT OPTIONS
+$("#filterOut").submit(async function(e) {
+  e.preventDefault();
+  let email=null;
+  var checkFeeling = $(".feelingChoices input:checkbox:checked").map(function(){
+      return $(this).val();
+  }).get();
+  var checkTemp = $(".tempChoices input:checkbox:checked").map(function(){
+      return $(this).val();
+  }).get();
+  var checkSky = $(".skyChoices input:checkbox:checked").map(function(){
+      return $(this).val();
+  }).get();
+
+  if($("#switch").is(":checked")){
+    email = $("#email-personalize").val();
+  }
+
+  var filtered = await getFilteredOutData(email, checkFeeling, checkTemp, checkSky);
+  datas = filtered;
+  convert(datas);
+  clear();
+  redraw();
+});
+
+/*  GET FILTERED OUT DATA  */
+async function getFilteredOutData(email, checkFeeling, checkTemp, checkSky){
+  var allQuery, feelingQuery, feelingData, tempQuery, tempData, skyQuery, skyData, allData, emailData;
+
+  if(email!=null){
+    let allEmails = await getEmails();
+    if(!allEmails.includes(email)){
+      email=null;
+      alert("This email doesn't exist in our database, displaying all data.");
+    }
+  }
+
+  if(email!=null && (checkFeeling.length != 0)){
+    feelingQuery = userInputRef.where("feeling", "in", checkFeeling);
+    feelingData = await getData(feelingQuery.where("email", "==", email));
+    allQuery = [...feelingData];
+  }
+  if(email!=null && (checkTemp.length != 0)){
+    tempQuery = userInputRef.where("temperature", 'in', checkTemp);
+    tempData = await getData(tempQuery.where("email", "==", email));
+    allQuery = [...tempData];
+  }
+  if(email!=null && (checkSky.length != 0)){
+    skyQuery = userInputRef.where("sky", 'in', checkSky);
+    skyData = await getData(skyQuery.where("email", "==", email));
+    allQuery = [...skyData];
+  }
+  if(email==null && (checkFeeling.length != 0)){
+    feelingQuery = userInputRef.where("feeling", "in", checkFeeling);
+    feelingData = await getData(feelingQuery);
+    allQuery = [...feelingData];
+  }
+  if(email==null && (checkTemp.length != 0)){
+    tempQuery = userInputRef.where("temperature", 'in', checkTemp);
+    tempData = await getData(tempQuery);
+    allQuery = [...tempData];
+  }
+  if(email==null && (checkSky.length != 0)){
+    skyQuery = userInputRef.where("sky", 'in', checkSky);
+    skyData = await getData(skyQuery);
+    allQuery = [...skyData];
+  }
+  if(email==null && (checkFeeling.length == 0) && (checkTemp.length == 0) && (checkSky.length == 0)){
+    allData = await getData(userInputRef);
+    allQuery = [...allData];
+  }
+  if(email!=null && (checkFeeling.length == 0) && (checkTemp.length == 0) && (checkSky.length == 0)){
+    emailData = await getData(userInputRef.where("email", "==", email));
+    allQuery = [...emailData];
+  }
+  console.log(allQuery);
+  return allQuery;
+}
 
 
 /*  CONVERTING TO COLORS  */
@@ -217,7 +315,8 @@ async function setup() {
   rainy = loadImage('assets/stripes.png');
   snowy = loadImage('assets/dots.png')
   other = loadImage('assets/other.png')
-  await getData;
+  //await getData;
+  datas = await getData(userInputRef);
   convert(datas);
   started = true;
   noLoop();

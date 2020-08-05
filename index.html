@@ -104,19 +104,15 @@
   <ul id="slide-out" class="sidenav">
     <h6>Filter out and visualize the data by...</h6>
     <br>
-    <form>
+    <form id="filterOut">
       <div class="switch">
         <label>
-        All data
-        <input type="checkbox">
-        <span class="lever"></span>
-        Personal data
+          All data<input type="checkbox" id="switch"><span class="lever"></span>Personal data
         </label>
       </div>
       <div class="input-field">
-        <!--i class="material-icons prefix">email</i-->
-        <input id="email" type="email" class="validate">
-        <label for="email">Email</label>
+        <input id="email-personalize" type="email" class="validate">
+        <label for="email-personalize">Email</label>
       </div>
       <ul class="collapsible">
         <li>
@@ -125,34 +121,34 @@
             <i class="material-icons">sentiment_dissatisfied</i>
             Feelings and moods
           </div>
-          <div class="collapsible-body">
+          <div class="collapsible-body feelingChoices">
             <p>
               <label>
-                <input type="checkbox"/>
+                <input type="checkbox" value="Sad"/>
                 <span><img src="assets/Sad.png" width='30px'> Sad</span>
               </label>
             </p>
             <p>
               <label>
-                <input type="checkbox"/>
-                <span><img src="assets/Okay.png" width='30px'> Grumpy</span>
+                <input type="checkbox" value="Grumpy"/>
+                <span><img src="assets/Grumpy.png" width='30px'> Grumpy</span>
               </label>
             </p>
             <p>
               <label>
-                <input type="checkbox"/>
+                <input type="checkbox" value="Okay/calm"/>
                 <span><img src="assets/Okay.png" width='30px'> Okay/Calm</span>
               </label>
             </p>
             <p>
               <label>
-                <input type="checkbox"/>
-                <span><img src="assets/Happy.png" width='30px'> Happy</span>
+                <input type="checkbox" value="Joyful/happy"/>
+                <span><img src="assets/Happy.png" width='30px'> Joyful/Happy</span>
               </label>
             </p>
             <p>
               <label>
-                <input type="checkbox"/>
+                <input type="checkbox" value="Excited!"/>
                 <span><img src="assets/Excited.png" width='30px'> Excited!</span>
               </label>
             </p>
@@ -163,28 +159,28 @@
             <i class="material-icons">ac_unit</i>
             Temperatures
           </div>
-          <div class="collapsible-body">
+          <div class="collapsible-body tempChoices">
             <p>
               <label>
-                <input type="checkbox"/>
+                <input type="checkbox" value="Too cold!"/>
                 <span><img src="assets/Toocold.png" width='30px'> Too Cold!</span>
               </label>
             </p>
             <p>
               <label>
-                <input type="checkbox"/>
+                <input type="checkbox" value="Chilly but ok"/>
                 <span><img src="assets/Chilly.png" width='30px'> Chilly, but ok</span>
               </label>
             </p>
             <p>
               <label>
-                <input type="checkbox"/>
+                <input type="checkbox" value="Warm"/>
                 <span><img src="assets/Warm.png" width='30px'> Warm</span>
               </label>
             </p>
             <p>
               <label>
-                <input type="checkbox"/>
+                <input type="checkbox" value="Too hot!"/>
                 <span><img src="assets/Toohot.png" width='30px'> Too Hot!</span>
               </label>
             </p>
@@ -196,47 +192,49 @@
             <i class="material-icons">wb_sunny</i>
             Sky and weather
           </div>
-          <div class="collapsible-body">
+          <div class="collapsible-body skyChoices">
             <p>
               <label>
-                <input type="checkbox"/>
+                <input type="checkbox" value="Snowy"/>
                 <span><img src="assets/Snowy.png" width='30px'> Snowy</span>
               </label>
             </p>
             <p>
               <label>
-                <input type="checkbox"/>
+                <input type="checkbox" value="Rainy"/>
                 <span><img src="assets/Rainy.png" width='30px'> Rainy</span>
               </label>
             </p>
             <p>
               <label>
-                <input type="checkbox"/>
+                <input type="checkbox" value="Sunny"/>
                 <span><img src="assets/Sunny.png" width='30px'> Sunny</span>
               </label>
             </p>
             <p>
               <label>
-                <input type="checkbox"/>
+                <input type="checkbox" value="Foggy"/>
                 <span><img src="assets/Foggy.png" width='30px'> Foggy</span>
               </label>
             </p>
             <p>
               <label>
-                <input type="checkbox"/>
+                <input type="checkbox" value="Cloudy"/>
                 <span><img src="assets/Cloudy.png" width='30px'> Cloudy</span>
               </label>
             </p>
             <p>
               <label>
-                <input type="checkbox"/>
+                <input type="checkbox" value="Other"/>
                 <span><img src="assets/Other1.png" width='30px'> Other</span>
               </label>
             </p>
           </div>
         </li>
       </ul>
-
+      <button class="btn-small purple lighten-2 sidenav-close" type="submit" id="filter-submit" style="float: right;">Submit
+        <i class="material-icons right">send</i>
+      </button>
     </form>
   </ul>
 

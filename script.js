@@ -1,30 +1,29 @@
-/*TO DO MORE:
-CHIPS LINKED TO FILTERING OUT DATA
+/*TO DO:
 PAGINATION
 TIMESTAMP
 LOCATION
-
 */
-
 
 let datas, rainy, snowy, other;
 var started = false;
 let userInputRef = db.collection('userInput');
 let userIdsRef = db.collection('usersIds');
 
-$(document).ready(function(){
+$(document).ready(function() {
   $('.fixed-action-btn').floatingActionButton();
   $('.modal').modal();
   $('.trigger-modal').modal();
   $('select').formSelect();
-  $('.sidenav').sidenav({edge: 'right'});
+  $('.sidenav').sidenav({
+    edge: 'right'
+  });
   $('.collapsible').collapsible({
     accordion: false,
   });
 });
 
 /*  READING USERINPUT FROM DATABASE */
-function getData(ref){
+function getData(ref) {
   let promise = ref.get().then(querySnap => {
     let userInputList = [];
     querySnap.forEach(doc => {
@@ -42,7 +41,7 @@ function getData(ref){
 }
 
 /*  GET USERS EMAILS FROM DATABASE  */
-function getEmails(){
+function getEmails() {
   let promise = userIdsRef.get().then(querySnap => {
     let usersEmails = [];
     querySnap.forEach(doc => {
@@ -56,7 +55,7 @@ function getEmails(){
 
 /*  SEND TO DATABASE  */
 //Create new document in usersIds collection
-function newUserIdDocument(firstName, lastName, email){
+function newUserIdDocument(firstName, lastName, email) {
   let newUsersIds = {
     firstName: firstName,
     lastName: lastName,
@@ -66,7 +65,7 @@ function newUserIdDocument(firstName, lastName, email){
 }
 
 //Create new document in UserInput collection
-function newUserInputDocument(feeling, sky, temperature, email){
+function newUserInputDocument(feeling, sky, temperature, email) {
   let newUserInput = {
     feeling: feeling,
     skyColor: sky,
@@ -78,11 +77,11 @@ function newUserInputDocument(feeling, sky, temperature, email){
 
 /*  USER INPUT  */
 //IDCHECKBOX
-$('#email-check').click(function(){
-  if($(this).is(':checked')){
+$('#email-check').click(function() {
+  if ($(this).is(':checked')) {
     $('#first_name').attr("disabled", true);
     $('#last_name').attr("disabled", true);
-  }else{
+  } else {
     $('#first_name').attr("disabled", false);
     $('#last_name').attr("disabled", false);
   }
@@ -94,18 +93,18 @@ $("#formid").submit(async function(e) {
   let firstName = $("#first_name").val();
   let lastName = $("#last_name").val();
   let email = $("#email").val();
-  let feeling = $( ".feeling" ).val();
-  let sky = $( ".sky" ).val();
-  let temperature = $( ".temperature" ).val();
+  let feeling = $(".feeling").val();
+  let sky = $(".sky").val();
+  let temperature = $(".temperature").val();
 
-  if($('#email-check').is(":not(:checked)")){
+  if ($('#email-check').is(":not(:checked)")) {
     newUserIdDocument(firstName, lastName, email);
     newUserInputDocument(feeling, sky, temperature, email);
-  }else {
+  } else {
     let allEmails = await getEmails();
-    if(allEmails.includes(email)){
+    if (allEmails.includes(email)) {
       newUserInputDocument(feeling, sky, temperature, email);
-    }else{
+    } else {
       alert("This email doesn't exist in our database");
     }
   }
@@ -117,10 +116,10 @@ $("#formid").submit(async function(e) {
 
 /*  QUERYING DATA TO VISUALIZE  */
 //SIDENAV SWITCH
-$('#switch').click(function(){
-  if($(this).is(':checked')){
+$('#switch').click(function() {
+  if ($(this).is(':checked')) {
     $('#email-personalize').attr("disabled", false);
-  }else{
+  } else {
     $('#email-personalize').attr("disabled", true);
   }
 });
@@ -128,20 +127,23 @@ $('#switch').click(function(){
 //SIDENAV FILTER OUT OPTIONS
 $("#filterOut").submit(async function(e) {
   e.preventDefault();
-  let email=null;
-  var checkFeeling = $(".feelingChoices input:checkbox:checked").map(function(){
-      return $(this).val();
+  let email = null;
+  var checkFeeling = $(".feelingChoices input:checkbox:checked").map(function() {
+    return $(this).val();
   }).get();
-  var checkTemp = $(".tempChoices input:checkbox:checked").map(function(){
-      return $(this).val();
+  var checkTemp = $(".tempChoices input:checkbox:checked").map(function() {
+    return $(this).val();
   }).get();
-  var checkSky = $(".skyChoices input:checkbox:checked").map(function(){
-      return $(this).val();
+  var checkSky = $(".skyChoices input:checkbox:checked").map(function() {
+    return $(this).val();
   }).get();
 
-  if($("#switch").is(":checked")){
+  if ($("#switch").is(":checked")) {
     email = $("#email-personalize").val();
   }
+
+  var allCheck = checkFeeling.concat(checkTemp, checkSky);
+  editTag(allCheck);
 
   var filtered = await getFilteredOutData(email, checkFeeling, checkTemp, checkSky);
   datas = filtered;
@@ -151,59 +153,69 @@ $("#filterOut").submit(async function(e) {
 });
 
 /*  GET FILTERED OUT DATA  */
-async function getFilteredOutData(email, checkFeeling, checkTemp, checkSky){
+async function getFilteredOutData(email, checkFeeling, checkTemp, checkSky) {
   var allQuery, feelingQuery, feelingData, tempQuery, tempData, skyQuery, skyData, allData, emailData;
 
-  if(email!=null){
+  if (email != null) {
     let allEmails = await getEmails();
-    if(!allEmails.includes(email)){
-      email=null;
+    if (!allEmails.includes(email)) {
+      email = null;
       alert("This email doesn't exist in our database, displaying all data.");
     }
   }
 
-  if(email!=null && (checkFeeling.length != 0)){
+  if (email != null && (checkFeeling.length != 0)) {
     feelingQuery = userInputRef.where("feeling", "in", checkFeeling);
     feelingData = await getData(feelingQuery.where("email", "==", email));
     allQuery = [...feelingData];
   }
-  if(email!=null && (checkTemp.length != 0)){
+  if (email != null && (checkTemp.length != 0)) {
     tempQuery = userInputRef.where("temperature", 'in', checkTemp);
     tempData = await getData(tempQuery.where("email", "==", email));
     allQuery = [...tempData];
   }
-  if(email!=null && (checkSky.length != 0)){
+  if (email != null && (checkSky.length != 0)) {
     skyQuery = userInputRef.where("sky", 'in', checkSky);
     skyData = await getData(skyQuery.where("email", "==", email));
     allQuery = [...skyData];
   }
-  if(email==null && (checkFeeling.length != 0)){
+  if (email == null && (checkFeeling.length != 0)) {
     feelingQuery = userInputRef.where("feeling", "in", checkFeeling);
     feelingData = await getData(feelingQuery);
     allQuery = [...feelingData];
   }
-  if(email==null && (checkTemp.length != 0)){
+  if (email == null && (checkTemp.length != 0)) {
     tempQuery = userInputRef.where("temperature", 'in', checkTemp);
     tempData = await getData(tempQuery);
     allQuery = [...tempData];
   }
-  if(email==null && (checkSky.length != 0)){
+  if (email == null && (checkSky.length != 0)) {
     skyQuery = userInputRef.where("sky", 'in', checkSky);
     skyData = await getData(skyQuery);
     allQuery = [...skyData];
   }
-  if(email==null && (checkFeeling.length == 0) && (checkTemp.length == 0) && (checkSky.length == 0)){
+  if (email == null && (checkFeeling.length == 0) && (checkTemp.length == 0) && (checkSky.length == 0)) {
     allData = await getData(userInputRef);
     allQuery = [...allData];
   }
-  if(email!=null && (checkFeeling.length == 0) && (checkTemp.length == 0) && (checkSky.length == 0)){
+  if (email != null && (checkFeeling.length == 0) && (checkTemp.length == 0) && (checkSky.length == 0)) {
     emailData = await getData(userInputRef.where("email", "==", email));
     allQuery = [...emailData];
   }
-  console.log(allQuery);
   return allQuery;
 }
 
+/*  EDIT TAGS FOR FILTERED DATA  */
+function editTag(tags){
+  $('#tags').children('div').remove();
+  if(tags.length !== 0){
+    for(t of tags){
+    $('#tags').append(`<div class="chip">${t}</div>`);
+    }
+  }else{
+    $('#tags').append(`<div class="chip">All Data</div>`);
+  }
+}
 
 /*  CONVERTING TO COLORS  */
 function convert(datas) {
@@ -315,7 +327,6 @@ async function setup() {
   rainy = loadImage('assets/stripes.png');
   snowy = loadImage('assets/dots.png')
   other = loadImage('assets/other.png')
-  //await getData;
   datas = await getData(userInputRef);
   convert(datas);
   started = true;

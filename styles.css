@@ -5,16 +5,16 @@ html, body {
 }
 
 ul.dropdown-content.select-dropdown li span {
-    color: #000;
-    font-size: 12px;
+  color: #000;
+  font-size: 12px;
 }
 
-.sidenav{
+.sidenav {
   padding: 2em 2em;
   text-align: center;
 }
 
-.sidenav p{
+.sidenav p {
   margin: 0px;
   padding-left: 1em;
   text-align: left;
